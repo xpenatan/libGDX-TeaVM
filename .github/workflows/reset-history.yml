@@ -1,41 +1,15 @@
-name: Reset History on gh-pages
-
 on:
   push:
     branches:
-      - gh-pages 
-  workflow_dispatch:  
+      - gh-pages
+  workflow_dispatch:
 
 jobs:
-  reset-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch all history to ensure we have the latest changes
-
-      - name: Set up Git
-        run: |
-          git config user.name "GitHub Actions"
-          git config user.email "actions@github.com"
-
-      - name: Create orphan branch with single commit
-        run: |
-          mkdir temp
-          find . -maxdepth 1 -not -path './temp' -not -path . -not -path './.git' -exec cp -r {} temp/ \;
-          git checkout --orphan temp-branch
-          git rm -rf .
-          mv temp/* .
-          git add .
-          git commit -m "Reset history: Single commit for GitHub Pages"
-          rm -rf temp
-
-      - name: Force push to gh-pages
-        run: |
-          git push origin temp-branch:gh-pages --force
-          git checkout gh-pages
-          git branch -D temp-branch
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
@@ -44,3 +18,4 @@ jobs:
           publish_dir: .
           publish_branch: gh-pages
           force_orphan: true
+          keep_files: false
