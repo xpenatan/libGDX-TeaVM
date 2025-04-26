@@ -1,3 +1,5 @@
+name: Reset History on gh-pages
+
 on:
   push:
     branches:
